@@ -28,7 +28,6 @@ library
       ExamplesDay3
       Factorial
       Lib
-      WeeklyHaskellOne
   other-modules:
       Paths_DailyHaskell
   hs-source-dirs:
