@@ -85,6 +85,10 @@ spec = do
         charsToAscii "aBcDeF" `shouldBe` [97,66,99,68,101,70]
     it "Take a string and transfer it into ASCII integer list, 'a9Fe00 b45', is [97,57,70,101,48,48,32,98,52,53]" $
         charsToAscii "a9Fe00 b45" `shouldBe` [97,57,70,101,48,48,32,98,52,53]
+    it "Take a string and transfer it into ASCII integer list, '[],,,.', is [91,93,44,44,44,46]" $
+        charsToAscii "[],,,." `shouldBe` [91,93,44,44,44,46]
+    it "Take a string and transfer it into ASCII integer list, '~ ;:', is [126,32,59,58]" $
+        charsToAscii "~ ;:" `shouldBe` [126,32,59,58]
 
 
   describe "ASCII to chars" $ do
@@ -102,6 +106,10 @@ spec = do
         asciiToChars [97,66,99,68,101,70] `shouldBe` "aBcDeF"
     it "Take an ASCII list and return the characters, [97,57,70,101,48,48,32,98,52,53], is 'a9Fe00 b45'" $
         asciiToChars [97,57,70,101,48,48,32,98,52,53]`shouldBe` "a9Fe00 b45" 
+    it "Take an ASCII list and return the characters, [91,93,44,44,44,46] is'[],,,.'" $
+        asciiToChars [91,93,44,44,44,46] `shouldBe` "[],,,."
+    it "Take an ASCII list and return the characters, [126,32,59,58] is '~ ;:'" $
+        asciiToChars [126,32,59,58] `shouldBe` "~ ;:"
 
   describe "Shift Ints" $ do
     it "Shift the ints in a list, [1,2,3,4,5,6] by 4 -> [5,6,7,8,9,10]" $
@@ -127,14 +135,16 @@ spec = do
         shiftMessage 3 "hello" `shouldBe` "khoor"
     it "shifts the message 'xyz' by -5 -> 'stu'" $
         shiftMessage (-5) "xyz" `shouldBe` "stu"
-    it "shifts the message 'The quick brown fox jumps over the lazy dog' by 13 -> 'aur-~#vpx-o |%{-s|&-w#z}!-|$r -\"ur-yn('-q|t'" $
-        shiftMessage 13 "The quick brown fox jumps over the lazy dog" `shouldBe` "aur-~#vpx-o |%{-s|&-w#z}!-|$r -\"ur-yn('-q|t"
+    it "shifts the message 'The quick brown fox jumps over the lazy dog' by 13 -> 'aur-~\STXvpx-o\DEL|\EOT{-s|\ENQ-w\STXz}\NUL-|\ETXr\DEL-\SOHur-yn\a\ACK-q|t'" $
+        shiftMessage 13 "The quick brown fox jumps over the lazy dog" `shouldBe` "aur-~\STXvpx-o\DEL|\EOT{-s|\ENQ-w\STXz}\NUL-|\ETXr\DEL-\SOHur-yn\a\ACK-q|t"
     it "shifts the message '0123456789' by 10 -> ':;<=>?@ABC'" $
         shiftMessage 10 "0123456789" `shouldBe` ":;<=>?@ABC"
     it "shifts the message 'hello' by 0 -> 'hello'" $
         shiftMessage 0 "hello" `shouldBe` "hello"
     it "shifts the message 'love142all101' by 6 -> 'ru|k7:8grr767'" $
         shiftMessage 6 "love142all101" `shouldBe` "ru|k7:8grr767"
-    it "shifts the message 'tell me more!' by 16 -> '%u||0}u0} #u1'" $
-        shiftMessage 16 "tell me more!" `shouldBe` "%u||0}u0} #u1"
+    it "shifts the message 'tell me more!' by 16 -> '\EOTu||0}u0}\DEL\STXu1'" $
+        shiftMessage 16 "tell me more!" `shouldBe` "\EOTu||0}u0}\DEL\STXu1"
+    it "shifts the messsafe '[]//231' by 3 -> '^`22564'" $
+        shiftMessage 3 "[]//231" `shouldBe` "^`22564"
 

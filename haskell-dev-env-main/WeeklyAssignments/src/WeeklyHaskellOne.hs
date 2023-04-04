@@ -4,8 +4,6 @@
 
 module WeeklyHaskellOne where
 
-    import Data.Char (ord, chr, isAscii)
-
     --removeChar consumes a single character and a string. 
     --Produces a new string with all instances of the character removed
     removeChar :: Char -> String -> String
@@ -35,30 +33,26 @@ module WeeklyHaskellOne where
     --charsToAscii consumes a string. 
     --Produces a new list containing the ASCII values of the characters in the given string.
     charsToAscii :: String -> [Int]
-    charsToAscii = map fromEnum
+    charsToAscii xs = [fromEnum x | x <- xs]
+
 
     --asciiToChars consumes a list of integers. 
     --Produces a new list of characters created from the ASCII values.
     asciiToChars :: [Int] -> String
-    asciiToChars = map toEnum
+    asciiToChars xs
+        | any (\x -> x < 0 || x > 127) xs = error "Input contains invalid ASCII values."
+        | otherwise = [toEnum x :: Char | x <- xs]
+
 
     --shiftInts consumes an integer (the shift value) and a list of integers. 
     --Produces a new list of integers where each value in the given list has been increased by the shift value.
     shiftInts :: Int -> [Int] -> [Int]
-    shiftInts shift = map (\x -> (x + shift) `mod` 128)
-
-
+    shiftInts n xs = [(x + n) `mod` 128 | x <- xs]
 
     --shiftMessage consumes an integer (the shift value) and a string (the message).
-    --Produces a new string which is the encrypted message where each character has been shifted by the shift value in the ASCII encoding. 
+    --Produces a new string which is the encrypted message where each character has been shifted by the shift value in the ASCII encoding.
     shiftMessage :: Int -> String -> String
-    shiftMessage shift message = map (shiftChar shift) message
-
-    -- helper method for the shift message method
-    --consumes an integer (shift value) and a char
-    --produces a new char which is encrypted by the shifted value
-    shiftChar :: Int -> Char -> Char
-    shiftChar shift c = if isAscii c then chr $ (ord c + shift - 32) `mod` 95 + 32 else c
+    shiftMessage n xs = asciiToChars $ shiftInts n $ charsToAscii xs
 
 
 
