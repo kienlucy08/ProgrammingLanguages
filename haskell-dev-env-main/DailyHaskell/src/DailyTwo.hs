@@ -3,19 +3,26 @@
 -- Programming Languages 
 
 module DailyTwo where
+    
 
     --every4th consumes a list of integers
     --Produces a list of integers that takes every 4th element from the list
-    every4th :: [Integer] -> [Integer]
+    every4th :: [a] -> [a]
     every4th [] = []
     every4th (_:_:_:w:xs) = w : every4th xs
     every4th _ = []
 
-
     --tupleDotQuoitent consumes two lists of integers
     --Produces the dot product of the two lists of integers
     tupleDotQuotient :: [Double] -> [Double] -> Double
-    tupleDotQuotient xs ys = sum (zipWith (/) (zipWith (*) xs ys) ys)
+    tupleDotQuotient [] [] = 0
+    tupleDotQuotient _ [] = error "Second input list is empty"
+    tupleDotQuotient [] _ = error "First input list is empty"
+    tupleDotQuotient (x:xs) (y:ys)
+        | length xs /= length ys = error "Input lists have different lengths"
+        | otherwise = x / y + tupleDotQuotient xs ys
+
+
 
     --appendToEach consumes a string and a list of strings
     --Produces a new list of strings with the appended string
@@ -27,10 +34,16 @@ module DailyTwo where
     --Produces a new list of generic elements in set representation
     toSetList :: Eq a => [a] -> [a]
     toSetList [] = []
-    toSetList (x:xs)
-        | x `elem` xs = toSetList xs
-        | otherwise = x : toSetList xs
+    toSetList (x:xs) = x : toSetList (removeAll x xs)
 
+    --helper method for toSetList that removes all the alike variables
+    --Consumes a list of generic elements
+    --Produces the new list in set representation
+    removeAll :: Eq a => a -> [a] -> [a]
+    removeAll _ [] = []
+    removeAll y (x:xs)
+        | x == y    = removeAll y xs
+        | otherwise = x : removeAll y xs
     
     --tupleDotQuotient Extra credit consumes two lists of integers
     --Produces a dot product of the two integers
